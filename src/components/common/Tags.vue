@@ -1,5 +1,5 @@
 <template>
-    <div class="tags" v-if="showTags">
+    <div class="tags" v-if="this.tagsList.length > 0">
         <ul>
             <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
                 <router-link :to="item.path" class="tags-li-title">
@@ -23,17 +23,11 @@
 </template>
 
 <script>
-    import bus from '@utils/bus';
+    import { mapState } from 'vuex'
+    import { SET_TAGSLIST } from '@store/contants';
     export default {
-        data() {
-            return {
-                tagsList: []
-            }
-        },
         computed: {
-            showTags() {
-                return this.tagsList.length > 0;
-            }
+            ...mapState(['tagsList'])
         },
         watch:{
             $route(newValue, oldValue){
@@ -46,8 +40,10 @@
           },
           // 关闭单个标签
           closeTags(index) {
-            const delItem = this.tagsList.splice(index, 1)[0];
-            const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
+            let newTagsList = this.tagsList;
+            const delItem = newTagsList.splice(index, 1)[0];
+            this.$store.commit(SET_TAGSLIST, newTagsList);
+            const item = newTagsList[index] ? newTagsList[index] : newTagsList[index - 1];
             if (item) {
               delItem.path === this.$route.fullPath && this.$router.push(item.path);
             }else{
@@ -56,7 +52,7 @@
           },
           // 关闭全部标签
           closeAll(){
-            this.tagsList = [];
+            this.$store.commit(SET_TAGSLIST, []);
             this.$router.push('/');
           },
           // 关闭其他标签
@@ -64,24 +60,25 @@
             const curItem = this.tagsList.filter(item => {
               return item.path === this.$route.fullPath;
             })
-            this.tagsList = curItem;
+            this.$store.commit(SET_TAGSLIST, curItem);
           },
           // 设置标签
           setTags(route){
-            const isExist = this.tagsList.some(item => {
+            let newTagsList = this.tagsList;
+            const isExist = newTagsList.some(item => {
               return item.path === route.fullPath;
             })
             if(!isExist){
-              if(this.tagsList.length >= 8){
-                this.tagsList.shift();
+              if(newTagsList.length >= 8){
+                newTagsList.shift();
               }
-              this.tagsList.push({
+              newTagsList.push({
                 title: route.meta.title,
                 path: route.fullPath,
                 name: route.matched[1].components.default.name
               })
             }
-            bus.$emit('tags', this.tagsList);
+            this.$store.commit(SET_TAGSLIST, newTagsList);
           },
           handleTags(command){
             command === 'other' ? this.closeOther() : this.closeAll();
@@ -89,23 +86,6 @@
         },
         created(){
             this.setTags(this.$route);
-            // 监听关闭当前页面的标签页
-            bus.$on('close_current_tags', () => {
-                for (let i = 0, len = this.tagsList.length; i < len; i++) {
-                    const item = this.tagsList[i];
-                    if(item.path === this.$route.fullPath){
-                        if(i < len - 1){
-                            this.$router.push(this.tagsList[i+1].path);
-                        }else if(i > 0){
-                            this.$router.push(this.tagsList[i-1].path);
-                        }else{
-                            this.$router.push('/');
-                        }
-                        this.tagsList.splice(i, 1);
-                        break;
-                    }
-                }
-            })
         }
     }
 

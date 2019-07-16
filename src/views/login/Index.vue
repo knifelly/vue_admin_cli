@@ -3,13 +3,13 @@
     <div class="ms-login">
       <div class="ms-title">后台管理系统</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
-        <el-form-item prop="username">
-          <el-input v-model="ruleForm.username" placeholder="username">
+        <el-form-item prop="userName">
+          <el-input v-model="ruleForm.userName" placeholder="用户名">
             <el-button slot="prepend" icon="el-icon-user-solid"></el-button>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+          <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
             <el-button slot="prepend" icon="el-icon-lock"></el-button>
           </el-input>
         </el-form-item>
@@ -28,11 +28,11 @@
     data: function(){
       return {
         ruleForm: {
-          username: 'admin',
+          userName: 'admin',
           password: '123123'
         },
         rules: {
-          username: [
+          userName: [
             { required: true, message: '请输入用户名', trigger: 'blur' }
           ],
           password: [
@@ -45,7 +45,7 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            setStorage(this.ruleForm.username,'ms_username');
+            setStorage(this.ruleForm.userName,'users');
             this.$router.push('/');
           } else {
             this.$message.warning('账号或密码格式不正确');
