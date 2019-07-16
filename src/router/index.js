@@ -19,14 +19,14 @@ const routes = [
         name: 'home',
         meta: { title: '系统首页' },
         component: loadView('home/Index')
-      },
-      {
-        path: '404',
-        name: '404',
-        meta: { title: '404' },
-        component: loadView('home/Index')
       }
     ]
+  },
+  {
+    path: '/404',
+    name: '404',
+    meta: { title: '404' },
+    component: loadView('public/404')
   },
   {
     path: '/login',

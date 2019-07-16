@@ -27,6 +27,7 @@ module.exports = {
       .set('@components', resolve('src/components'))
       .set('@plugins', resolve('src/plugins'))
       .set('@router', resolve('src/router'))
+      .set('@store', resolve('src/store'))
       .set('@utils', resolve('src/utils'))
       .set('@views', resolve('src/views'))
 

@@ -1,1 +1,5 @@
+export const SET_COLLAPSE = 'SET_COLLAPSE'
+
+export const SET_TAGSLIST = 'SET_TAGSLIST'
+
 export const SET_USERNAME = 'SET_USERNAME'

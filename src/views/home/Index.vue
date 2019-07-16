@@ -2,11 +2,11 @@
   <div>
     <el-row :gutter="20">
       <el-col :span="8">
-        <el-card shadow="hover" class="mgb20" style="height:252px;">
+        <el-card shadow="hover" class="mgb20">
           <div class="user-info">
             <img src="@assets/images/user_avator.jpg" class="user-avator" alt="">
             <div class="user-info-cont">
-              <div class="user-info-name">{{name}}</div>
+              <div class="user-info-name">{{userName}}</div>
               <div>{{role}}</div>
             </div>
           </div>
@@ -24,12 +24,12 @@
     name: 'home',
     data() {
       return {
-        name: getStorage('ms_username') || '无名之辈',
+        userName: getStorage('users') || '无名之辈',
       }
     },
     computed: {
       role() {
-        return this.name === 'admin' ? '超级管理员' : '普通用户';
+        return this.userName === 'admin' ? '超级管理员' : '普通用户';
       }
     },
     mounted(){

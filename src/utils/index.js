@@ -10,7 +10,6 @@ export const getStorage = (
   day = EXPIRE_TIME
 ) => {
   const dateStr = localStorage.getItem(key);
-  console.log(dateStr)
   if (!dateStr) {
     return null
   }

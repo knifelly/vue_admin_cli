@@ -18,7 +18,7 @@
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{username}} <i class="el-icon-caret-bottom"></i>
+                        {{userName}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item command="loginOut">退出登录</el-dropdown-item>
@@ -29,34 +29,33 @@
     </div>
 </template>
 <script>
-    import bus from '@utils/bus';
+    import { mapState } from 'vuex'
+    import { SET_COLLAPSE } from '@store/contants';
     import { getStorage, removeStorage } from '@utils/index';
     export default {
         data() {
             return {
-                collapse: false,
                 fullScreen: false,
-                name: 'admin'
+                defaultUserName: 'admin'
             }
         },
         computed:{
-            username(){
-                let username = getStorage('ms_username');
-                return username ? username : this.name;
+            ...mapState(['collapse']),
+            userName(){
+                return getStorage('users') || this.defaultUserName;
             }
         },
         methods:{
             // 用户名下拉菜单选择事件
             handleCommand(command) {
-                if(command === 'loginOut'){
-                  removeStorage('ms_username');
+                if(command === 'loginOut'){ // 退出登录
+                  removeStorage('users');
                   this.$router.push('/login');
                 }
             },
             // 侧边栏折叠
             collapseChage(){
-                this.collapse = !this.collapse;
-                bus.$emit('collapse', this.collapse);
+                this.$store.commit(SET_COLLAPSE, !this.collapse)
             },
             // 全屏事件
             handleFullScreen(){
@@ -87,6 +86,7 @@
             }
         },
         mounted(){
+            // 当屏幕小于1500，折叠左侧栏
             if(document.body.clientWidth < 1500){
                 this.collapseChage();
             }
@@ -94,30 +94,19 @@
     }
 </script>
 <style lang="scss" scoped>
-@mixin btnBaseStyle(){
-  position: relative;
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  border-radius: 15px;
-  cursor: pointer;
-}
 .header {
   position: relative;
-  box-sizing: border-box;
-  width: 100%;
   height: 70px;
   font-size: 22px;
   color: #fff;
   .logo{
     float: left;
-    width:250px;
     line-height: 70px;
   }
   .collapse-btn{
+    cursor: pointer;
     float: left;
     padding: 0 21px;
-    cursor: pointer;
     line-height: 70px;
   }
   .header-right{
@@ -125,36 +114,28 @@
     padding-right: 50px;
   }
   .header-userbox{
-    display: flex;
+    padding-top: 14px;
     height: 70px;
-    align-items: center;
+    box-sizing: border-box;
   }
   .btn-fullscreen{
-    @include btnBaseStyle();
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    margin:5px 5px 0 0; 
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
     transform: rotate(45deg);
-    margin-right: 5px;
     font-size: 24px;
-  }
-  .btn-bell{
-    @include btnBaseStyle();
-    .el-icon-bell{
-      color: #fff;
-    }
-  }
-  .btn-bell-badge{
-    position: absolute;
-    right: 0;
-    top: -2px;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background: #f56c6c;
-    color: #fff;
+    text-align: center;
   }
   .user-name{
     margin-left: 10px;
   }
   .user-avator{
+    display: inline-block;
+    vertical-align: middle;
     margin-left: 20px;
     img{
       display: block;
@@ -164,8 +145,8 @@
     }
   }
   .el-dropdown-link{
-    color: #fff;
     cursor: pointer;
+    color: #fff;
   }
   .el-dropdown-menu__item{
     text-align: center;

@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { SET_USERNAME } from './contants'
+import { 
+  SET_COLLAPSE,
+  SET_TAGSLIST,
+  SET_USERNAME 
+} from './contants'
 
 Vue.use(Vuex)
 
 const state = {
-  userName: '张三'
+  collapse: false,  // 是否收起左侧栏
+  tagsList:[],       // 顶部标签列表
+  userName:'',      // 用户名
 }
 
 const getters = {
@@ -16,6 +22,12 @@ const getters = {
 }
 
 const mutations = {
+  [SET_COLLAPSE](state, collapse) {
+    state.collapse = collapse
+  },
+  [SET_TAGSLIST](state, tagsList) {
+    state.tagsList = tagsList
+  },
   [SET_USERNAME](state, name) {
     state.userName = name
   }
